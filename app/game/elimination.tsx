@@ -5,6 +5,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
+import { useI18n } from '../../constants/i18n';
 import { useGameStore } from '../../store/gameStore';
 import { useSettingsStore } from '../../store/settingsStore';
 
@@ -14,6 +15,7 @@ export default function EliminationScreen() {
     const isDark = appTheme === 'dark';
     const router = useRouter();
     const [guessResolved, setGuessResolved] = useState(false);
+    const t = useI18n();
 
     const player = players.find(p => p.id === eliminatedPlayerId);
     if (!player) return null;
@@ -42,7 +44,7 @@ export default function EliminationScreen() {
         <ScreenWrapper className="justify-center items-center py-6">
             <View className="items-center flex-1 justify-center w-full px-6">
                 <AppText className="text-primary-action font-black text-[10px] uppercase tracking-[4px] mb-2">
-                    ELIMINATED
+                    {t.elimination.title.toUpperCase()}
                 </AppText>
 
                 <AppText className={`text-4xl font-black text-center mb-10 ${isDark ? 'text-white' : 'text-[#101828]'}`}>
@@ -58,19 +60,19 @@ export default function EliminationScreen() {
                 </View>
 
                 <AppText className={`text-2xl font-black uppercase tracking-widest mb-2 ${isImpostor ? 'text-primary-action' : 'text-[#B6C2E2]'}`}>
-                    {isImpostor ? 'IMPOSTOR' : 'CIVILIAN'}
+                    {isImpostor ? t.elimination.impostorLabel : t.elimination.civilianLabel}
                 </AppText>
 
                 <AppText className="text-text-secondary text-sm text-center px-8 mb-8">
                     {isImpostor
-                        ? "Great job! You found the impostor."
-                        : "Oops! You voted out an innocent."}
+                        ? t.elimination.impostorFound
+                        : t.elimination.civilianEliminated}
                 </AppText>
 
                 {isImpostor && !guessResolved && (
                     <View className={`w-full ${isDark ? 'bg-[#182235]' : 'bg-white shadow-xl'} p-6 rounded-[28px] items-center`}>
                         <AppText className={`font-black text-[10px] uppercase tracking-[2px] mb-4 text-center ${isDark ? 'text-[#B6C2E2]' : 'text-gray-500'}`}>
-                            LAST CHANCE: DID THEY GUESS THE WORD?
+                            {t.elimination.lastChance}
                         </AppText>
                         <View className="flex-row gap-3 w-full">
                             <TouchableOpacity
@@ -78,14 +80,14 @@ export default function EliminationScreen() {
                                 className="flex-1 bg-green-500/10 border-2 border-green-500/50 h-12 rounded-2xl items-center justify-center flex-row"
                             >
                                 <Check color="#22C55E" size={18} strokeWidth={3} className="mr-2" />
-                                <AppText className="text-green-500 font-bold text-sm">YES</AppText>
+                                <AppText className="text-green-500 font-bold text-sm">{t.elimination.yes}</AppText>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => handleGuess(false)}
                                 className="flex-1 bg-red-500/10 border-2 border-red-500/50 h-12 rounded-2xl items-center justify-center flex-row"
                             >
                                 <X color="#EF4444" size={18} strokeWidth={3} className="mr-2" />
-                                <AppText className="text-red-500 font-bold text-sm">NO</AppText>
+                                <AppText className="text-red-500 font-bold text-sm">{t.elimination.no}</AppText>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -95,7 +97,7 @@ export default function EliminationScreen() {
             <View className="w-full px-6 pb-6">
                 {(!isImpostor || guessResolved) && (
                     <Button
-                        title="See Results"
+                        title={t.elimination.seeResults}
                         onPress={handleNext}
                         className="w-full h-14"
                         textClassName="text-base"
