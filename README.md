@@ -56,7 +56,6 @@ Follow these steps to run the game in your local environment!
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/BrayanMQ/el-impostor-game.git
     cd el-impostor-game
     ```
 
@@ -76,7 +75,7 @@ Use the **Expo Go** app on your mobile device or an emulator to test the game. �
 
 ## 🤝 Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create! Any contribution you make is **greatly appreciated**. ❤️
+Any contribution you make is **greatly appreciated**. ❤️
 
 1. **Fork** the project.
 2. Create your **Feature Branch** (`git checkout -b feature/AmazingFeature`).
@@ -85,5 +84,3 @@ Contributions are what make the open-source community such an amazing place to l
 5. Open a **Pull Request**.
 
 ---
-
-Made with ❤️ by the **El Impostor** team. Let's play! 👋🎮
