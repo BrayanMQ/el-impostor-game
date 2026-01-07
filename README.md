@@ -1,50 +1,89 @@
-# Welcome to your Expo app 👋
+# El Impostor 🕵️‍♂️🎭
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Welcome to **El Impostor**, the ultimate party game to test your wit, deception, and deduction skills! 📱✨
 
-## Get started
+This is a mobile game designed to be played in person by sharing a single device. Who is the best liar in your group? It's time to find out!
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 🚀 About the Game
 
-2. Start the app
+**El Impostor** is a game of words and suspicions. A group of **Civilians** knows a **Secret Word**, but hidden among them are one or more **Impostors** who have no idea what it is. 🤫
 
-   ```bash
-   npx expo start
-   ```
+### 🎯 The Objective
+- **Civilians:** Identify and eliminate all Impostors before they figure out the secret word.
+- **Impostors:** Blend in, confuse the civilians, and guess the secret word if they are caught.
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## ✨ Key Features
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Local Play:** You only need one phone to play with all your friends. 📲
+- **Dynamic Roles:** Automatic role assignment (Civilians and Impostors). 🎭
+- **Various Themes:** Different word categories to keep the game fresh. 📂
+- **Modern Interface:** Sleek, dark design that's easy to use, built with React Native and TailwindCSS. 💅
+- **Haptics & Animations:** An immersive tactile experience. ⚡
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 🎮 How to Play
 
-```bash
-npm run reset-project
-```
+1. **Setup:** Choose the number of players and the number of impostors. 👥
+2. **Reveal:** Pass the phone around. Each player must press to reveal their role and the secret word (if they are a civilian). 👁️
+3. **The Round:** Each player says a single word related to the secret word. Be careful! If you're too obvious, the impostor will guess it. If you're too vague, they'll suspect you. 🗣️
+4. **Discussion & Voting:** Debate who you think the impostor is and vote to eliminate them. 🗳️
+5. **Victory:**
+    - **Civilians** win if they eliminate all impostors. 🏆
+    - **Impostors** win if they equal the number of civilians or if they guess the word correctly upon being discovered. 😈
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 🛠️ Tech Stack
 
-To learn more about developing your project with Expo, look at the following resources:
+This project is built with the best modern technologies:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- **[Expo](https://expo.dev/)** - Framework for universal React applications. 🚀
+- **[React Native](https://reactnative.dev/)** - For the native interface. ⚛️
+- **[NativeWind](https://www.nativewind.dev/)** - Tailwind CSS for React Native. 🌊
+- **[Zustand](https://github.com/pmndrs/zustand)** - Simple and fast state management. 📦
+- **[Expo Router](https://docs.expo.dev/router/introduction/)** - File-based navigation. 🗺️
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+## 💻 Installation and Development
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Follow these steps to run the game in your local environment!
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/BrayanMQ/el-impostor-game.git
+    cd el-impostor-game
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Start the project:**
+    ```bash
+    npx expo start
+    ```
+
+Use the **Expo Go** app on your mobile device or an emulator to test the game. 📲
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create! Any contribution you make is **greatly appreciated**. ❤️
+
+1. **Fork** the project.
+2. Create your **Feature Branch** (`git checkout -b feature/AmazingFeature`).
+3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`).
+4. **Push** to the branch (`git push origin feature/AmazingFeature`).
+5. Open a **Pull Request**.
+
+---
+
+Made with ❤️ by the **El Impostor** team. Let's play! 👋🎮
