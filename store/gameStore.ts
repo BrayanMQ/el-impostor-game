@@ -42,6 +42,7 @@ interface GameState {
     voteToEliminate: (playerId: string) => void;
     checkVictoryAfterElimination: () => boolean;
     impostorGuess: (word: string) => boolean;
+    resolveImpostorGuess: (didGuess: boolean) => void;
     nextRound: () => void;
     resetGame: () => void;
 }
@@ -170,6 +171,15 @@ export const useGameStore = create<GameState>((set, get) => ({
             return true;
         }
         return false;
+    },
+
+    resolveImpostorGuess: (didGuess) => {
+        if (didGuess) {
+            set({ winner: 'impostor', gameStatus: 'finished' });
+        } else {
+            // If they didn't guess, we just let the normal flow continue
+            // The victory check will be called from the UI
+        }
     },
 
     impostorGuess: (guess) => {

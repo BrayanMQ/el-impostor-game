@@ -1,24 +1,31 @@
 import { useRouter } from 'expo-router';
-import { EyeOff, Fingerprint, User } from 'lucide-react-native';
+import { AlertCircle, ArrowRight, Fingerprint, ShieldCheck } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
 import { useGameStore } from '../../store/gameStore';
+import { useSettingsStore } from '../../store/settingsStore';
 
 export default function RevealScreen() {
     const { players, secretWord } = useGameStore();
+    const { appTheme } = useSettingsStore();
+    const isDark = appTheme === 'dark';
     const [index, setIndex] = useState(0);
     const currentPlayer = players[index];
     const router = useRouter();
 
     const rotate = useSharedValue(0);
+    const scale = useSharedValue(1);
 
     const frontStyle = useAnimatedStyle(() => {
         return {
-            transform: [{ rotateY: `${rotate.value}deg` }],
+            transform: [
+                { rotateY: `${rotate.value}deg` },
+                { scale: scale.value }
+            ],
             opacity: interpolate(rotate.value, [85, 95], [1, 0]),
             backfaceVisibility: 'hidden',
         };
@@ -26,18 +33,23 @@ export default function RevealScreen() {
 
     const backStyle = useAnimatedStyle(() => {
         return {
-            transform: [{ rotateY: `${rotate.value + 180}deg` }],
+            transform: [
+                { rotateY: `${rotate.value + 180}deg` },
+                { scale: scale.value }
+            ],
             opacity: interpolate(rotate.value, [85, 95], [0, 1]),
             backfaceVisibility: 'hidden',
         };
     });
 
     const handlePressIn = () => {
-        rotate.value = withTiming(180, { duration: 600 });
+        rotate.value = withTiming(180, { duration: 500 });
+        scale.value = withSpring(1.05);
     };
 
     const handlePressOut = () => {
         rotate.value = withTiming(0, { duration: 400 });
+        scale.value = withSpring(1);
     };
 
     const handleNext = () => {
@@ -52,55 +64,94 @@ export default function RevealScreen() {
     if (!currentPlayer) return null;
 
     return (
-        <ScreenWrapper className="justify-center items-center">
-            <AppText variant="h3" className="text-center mb-4 text-muted">
-                Player {index + 1} of {players.length}
-            </AppText>
+        <ScreenWrapper className="justify-between py-6">
+            <View className="items-center">
+                {/* Progress Indicators */}
+                <View className="flex-row gap-2 mb-8">
+                    {players.map((_, i) => (
+                        <View
+                            key={i}
+                            className={`h-1.5 rounded-full ${i === index ? 'w-8 bg-primary-action' : `w-3 ${isDark ? 'bg-surface-soft' : 'bg-gray-200'}`}`}
+                        />
+                    ))}
+                </View>
 
-            <AppText variant="h1" className="mb-8">{currentPlayer.name}</AppText>
+                <View className="items-center px-4">
+                    <AppText className="text-accent font-black uppercase tracking-[3px] text-sm mb-2">Player Reveal</AppText>
+                    <AppText variant="h1" className="text-5xl font-black text-center mb-1">{currentPlayer.name}</AppText>
+                    <AppText variant="body" className="text-text-secondary text-center italic">Pass the phone to this player</AppText>
+                </View>
+            </View>
 
-            <View className="mb-10 w-full items-center">
+            <View className="flex-1 justify-center items-center w-full px-4">
                 <Pressable
                     onPressIn={handlePressIn}
                     onPressOut={handlePressOut}
-                    className="w-72 h-96 sm:w-80 sm:h-[400px]"
+                    className="w-full max-w-[320px] h-[450px]"
                 >
                     {/* Front Face (Hidden) */}
-                    <Animated.View style={[styles.cardFace, frontStyle]} className="bg-surface-card border-2 border-surface-soft items-center justify-center rounded-3xl shadow-2xl">
-                        <View className="mb-4 opacity-80">
-                            <Fingerprint size={80} color="#4CC9F0" />
+                    <Animated.View
+                        style={[styles.cardFace, frontStyle]}
+                        className={`${isDark ? 'bg-surface-card border-surface-soft' : 'bg-white border-gray-100 shadow-xl'} border-4 items-center justify-center rounded-[48px]`}
+                    >
+                        <View className={`w-32 h-32 rounded-full items-center justify-center mb-8 ${isDark ? 'bg-[#1F2A44]' : 'bg-gray-50'}`}>
+                            <Fingerprint size={64} color="#E5533D" strokeWidth={1.5} />
                         </View>
-                        <AppText className="text-accent font-bold text-xl uppercase tracking-widest">Hold to Reveal</AppText>
+                        <AppText className={`font-black text-2xl uppercase tracking-widest text-center px-8 ${isDark ? 'text-white' : 'text-[#101828]'}`}>
+                            Hold to Reveal
+                        </AppText>
+                        <AppText className="text-text-secondary mt-4 text-center px-10">Only look if you are {currentPlayer.name}</AppText>
                     </Animated.View>
 
                     {/* Back Face (Revealed) */}
-                    <Animated.View style={[styles.cardFace, backStyle]} className={`items-center justify-center rounded-3xl shadow-2xl border-2 ${currentPlayer.role === 'impostor' ? 'bg-surface-card border-primary' : 'bg-surface-card border-accent'}`}>
+                    <Animated.View
+                        style={[styles.cardFace, backStyle]}
+                        className={`items-center justify-center rounded-[48px] border-2 p-8 ${isDark ? 'bg-surface-card border-surface-soft' : 'bg-white border-gray-100 shadow-2xl'
+                            }`}
+                    >
                         {currentPlayer.role === 'impostor' ? (
                             <>
-                                <View className="mb-6">
-                                    <EyeOff size={60} color="#E5533D" />
+                                <View className="bg-primary-action/10 p-5 rounded-full mb-4">
+                                    <AlertCircle size={40} color="#E5533D" strokeWidth={2} />
                                 </View>
-                                <AppText className="text-primary font-bold text-2xl uppercase tracking-widest text-center mb-2">Impostor</AppText>
-                                <AppText className="text-center px-4 text-text-secondary">Blend in. Don't let them know you don't know the word.</AppText>
+                                <AppText className={`font-black text-xs uppercase tracking-[4px] mb-1 ${isDark ? 'text-white/60' : 'text-gray-500'}`}>You are the</AppText>
+                                <AppText className="text-primary-action font-black text-4xl uppercase tracking-tighter text-center">
+                                    Impostor
+                                </AppText>
+                                <View className="mt-6 h-px w-12 bg-primary-action/20" />
+                                <AppText className="text-text-secondary mt-4 text-[10px] text-center opacity-50 uppercase tracking-widest">
+                                    Undetected Mode Active
+                                </AppText>
                             </>
                         ) : (
                             <>
-                                <View className="mb-6">
-                                    <User size={60} color="#4CC9F0" />
+                                <View className="bg-accent/10 p-5 rounded-full mb-4">
+                                    <ShieldCheck size={40} color="#4CC9F0" strokeWidth={2} />
                                 </View>
-                                <AppText className="text-accent font-bold text-lg uppercase tracking-widest mb-2">Secret Word</AppText>
-                                <AppText className="text-white font-bold text-4xl text-center">{secretWord}</AppText>
+                                <AppText className="text-accent font-black text-[10px] uppercase tracking-[4px] mb-2">Secret Word</AppText>
+                                <AppText className={`font-black text-3xl text-center ${isDark ? 'text-white' : 'text-[#101828]'}`}>
+                                    {secretWord}
+                                </AppText>
+                                <View className="mt-6 h-px w-12 bg-accent/20" />
+                                <AppText className="text-text-secondary mt-4 text-[10px] text-center opacity-50 uppercase tracking-widest">
+                                    Civilian Protocol
+                                </AppText>
                             </>
                         )}
                     </Animated.View>
                 </Pressable>
             </View>
 
-            <Button
-                title={index < players.length - 1 ? "Next Player" : "Start Round"}
-                onPress={handleNext}
-                className="w-full max-w-sm"
-            />
+            <View className="px-6 pb-2">
+                <Button
+                    title={index < players.length - 1 ? "Next Player" : "Start Game"}
+                    onPress={handleNext}
+                    className="w-full"
+                    variant="primary"
+                    icon={<ArrowRight size={22} color="white" />}
+                    iconPosition="right"
+                />
+            </View>
         </ScreenWrapper>
     );
 }
