@@ -6,6 +6,7 @@ import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring, wi
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
+import { useI18n } from '../../constants/i18n';
 import { useGameStore } from '../../store/gameStore';
 import { useSettingsStore } from '../../store/settingsStore';
 
@@ -16,6 +17,7 @@ export default function RevealScreen() {
     const [index, setIndex] = useState(0);
     const currentPlayer = players[index];
     const router = useRouter();
+    const t = useI18n();
 
     const rotate = useSharedValue(0);
     const scale = useSharedValue(1);
@@ -77,9 +79,9 @@ export default function RevealScreen() {
                 </View>
 
                 <View className="items-center px-4">
-                    <AppText className="text-accent font-black uppercase tracking-[3px] text-sm mb-2">Player Reveal</AppText>
+                    <AppText className="text-accent font-black uppercase tracking-[3px] text-sm mb-2">{t.reveal.title}</AppText>
                     <AppText variant="h1" className="text-5xl font-black text-center mb-1">{currentPlayer.name}</AppText>
-                    <AppText variant="body" className="text-text-secondary text-center italic">Pass the phone to this player</AppText>
+                    <AppText variant="body" className="text-text-secondary text-center italic">{t.reveal.passPhone}</AppText>
                 </View>
             </View>
 
@@ -98,9 +100,9 @@ export default function RevealScreen() {
                             <Fingerprint size={64} color="#E5533D" strokeWidth={1.5} />
                         </View>
                         <AppText className={`font-black text-2xl uppercase tracking-widest text-center px-8 ${isDark ? 'text-white' : 'text-[#101828]'}`}>
-                            Hold to Reveal
+                            {t.reveal.tapToReveal}
                         </AppText>
-                        <AppText className="text-text-secondary mt-4 text-center px-10">Only look if you are {currentPlayer.name}</AppText>
+                        <AppText className="text-text-secondary mt-4 text-center px-10">{t.reveal.onlyLook} {currentPlayer.name}</AppText>
                     </Animated.View>
 
                     {/* Back Face (Revealed) */}
@@ -114,13 +116,13 @@ export default function RevealScreen() {
                                 <View className="bg-primary-action/10 p-5 rounded-full mb-4">
                                     <AlertCircle size={40} color="#E5533D" strokeWidth={2} />
                                 </View>
-                                <AppText className={`font-black text-xs uppercase tracking-[4px] mb-1 ${isDark ? 'text-white/60' : 'text-gray-500'}`}>You are the</AppText>
+                                <AppText className={`font-black text-xs uppercase tracking-[4px] mb-1 ${isDark ? 'text-white/60' : 'text-gray-500'}`}>{t.reveal.youAre}</AppText>
                                 <AppText className="text-primary-action font-black text-4xl uppercase tracking-tighter text-center">
-                                    Impostor
+                                    {t.reveal.impostor}
                                 </AppText>
                                 <View className="mt-6 h-px w-12 bg-primary-action/20" />
                                 <AppText className="text-text-secondary mt-4 text-[10px] text-center opacity-50 uppercase tracking-widest">
-                                    Undetected Mode Active
+                                    {t.reveal.undetected}
                                 </AppText>
                             </>
                         ) : (
@@ -128,13 +130,13 @@ export default function RevealScreen() {
                                 <View className="bg-accent/10 p-5 rounded-full mb-4">
                                     <ShieldCheck size={40} color="#4CC9F0" strokeWidth={2} />
                                 </View>
-                                <AppText className="text-accent font-black text-[10px] uppercase tracking-[4px] mb-2">Secret Word</AppText>
+                                <AppText className="text-accent font-black text-[10px] uppercase tracking-[4px] mb-2">{t.reveal.secretWord}</AppText>
                                 <AppText className={`font-black text-3xl text-center ${isDark ? 'text-white' : 'text-[#101828]'}`}>
                                     {secretWord}
                                 </AppText>
                                 <View className="mt-6 h-px w-12 bg-accent/20" />
                                 <AppText className="text-text-secondary mt-4 text-[10px] text-center opacity-50 uppercase tracking-widest">
-                                    Civilian Protocol
+                                    {t.reveal.civilianProtocol}
                                 </AppText>
                             </>
                         )}
@@ -144,7 +146,7 @@ export default function RevealScreen() {
 
             <View className="px-6 pb-2">
                 <Button
-                    title={index < players.length - 1 ? "Next Player" : "Start Game"}
+                    title={index < players.length - 1 ? t.reveal.nextPlayer : t.reveal.startGame}
                     onPress={handleNext}
                     className="w-full"
                     variant="primary"

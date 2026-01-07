@@ -5,6 +5,7 @@ import { FlatList, TextInput, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
+import { useI18n } from '../../constants/i18n';
 import { PREDEFINED_THEMES, ThemeKey } from '../../constants/Themes';
 import { useGameStore } from '../../store/gameStore';
 import { useSettingsStore } from '../../store/settingsStore';
@@ -24,6 +25,7 @@ export default function ThemeSelection() {
     const { appTheme } = useSettingsStore();
     const isDark = appTheme === 'dark';
     const [customInput, setCustomInput] = useState('');
+    const t = useI18n();
 
     const themes = [...Object.keys(PREDEFINED_THEMES), 'Custom'];
 
@@ -36,7 +38,7 @@ export default function ThemeSelection() {
 
     const renderCustomEditor = () => (
         <View className={`mt-4 ${isDark ? 'bg-surface-card' : 'bg-white'} p-6 rounded-[32px] border ${isDark ? 'border-surface-soft' : 'border-gray-100'}`}>
-            <AppText variant="label" className="mb-4 text-accent">Custom Words</AppText>
+            <AppText variant="label" className="mb-4 text-accent">{t.themeSelection.categories.Custom}</AppText>
             <View className="flex-row gap-2 mb-6">
                 <TextInput
                     className={`flex-1 ${isDark ? 'bg-surface-soft border-transparent text-white' : 'bg-gray-100 border-transparent text-[#101828]'} p-4 rounded-2xl font-sans text-lg`}
@@ -74,8 +76,8 @@ export default function ThemeSelection() {
     return (
         <ScreenWrapper>
             <View className="mb-8">
-                <AppText variant="h1" className="mb-1 text-4xl font-black">Theme</AppText>
-                <AppText variant="body" className="text-text-secondary">Select a category for secret words</AppText>
+                <AppText variant="h1" className="mb-1 text-4xl font-black">{t.themeSelection.title}</AppText>
+                <AppText variant="body" className="text-text-secondary">{t.themeSelection.subtitle}</AppText>
             </View>
 
             <FlatList
@@ -88,6 +90,8 @@ export default function ThemeSelection() {
                 renderItem={({ item }) => {
                     const isSelected = settings.theme === item;
                     const Icon = THEME_ICONS[item] || PenTool;
+                    // @ts-ignore
+                    const translatedName = t.themeSelection.categories[item] || item;
 
                     return (
                         <TouchableOpacity
@@ -106,7 +110,7 @@ export default function ThemeSelection() {
                                 />
                             </View>
                             <AppText className={`text-lg text-center ${isSelected ? 'font-black text-white' : (isDark ? 'text-text-secondary' : 'text-gray-500')}`}>
-                                {item}
+                                {translatedName}
                             </AppText>
 
                             {isSelected && (
@@ -122,7 +126,7 @@ export default function ThemeSelection() {
 
             <View className="absolute bottom-6 left-6 right-6">
                 <Button
-                    title="Confirm & Start"
+                    title={t.playerSetup.startGame}
                     disabled={settings.theme === 'Custom' && settings.customWords.length === 0}
                     onPress={() => router.push('/setup/confirm')}
                     icon={<ArrowRight size={22} color="white" />}

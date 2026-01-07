@@ -4,6 +4,7 @@ import { FlatList, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
+import { useI18n } from '../../constants/i18n';
 import { useGameStore } from '../../store/gameStore';
 import { useSettingsStore } from '../../store/settingsStore';
 
@@ -13,6 +14,7 @@ export default function VoteScreen() {
     const isDark = appTheme === 'dark';
     const router = useRouter();
     const [selectedId, setSelectedId] = useState<string | null>(null);
+    const t = useI18n();
 
     const alivePlayers = players.filter(p => p.isAlive);
 
@@ -28,10 +30,10 @@ export default function VoteScreen() {
             <View className="flex-1 px-4">
                 <View className="mt-8 mb-10">
                     <AppText variant="h1" className={`text-4xl font-black mb-2 ${isDark ? 'text-white' : 'text-[#101828]'}`}>
-                        Who is the Impostor?
+                        {t.vote.title}
                     </AppText>
                     <AppText className="text-text-secondary text-lg">
-                        Discuss and select the player to eliminate
+                        {t.vote.subtitle}
                     </AppText>
                 </View>
 
@@ -63,7 +65,7 @@ export default function VoteScreen() {
 
             <View className="absolute bottom-10 left-6 right-6">
                 <Button
-                    title="Eliminate Player"
+                    title={t.vote.eliminate}
                     disabled={!selectedId}
                     onPress={handleEliminate}
                     className="w-full h-16"
