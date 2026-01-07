@@ -1,58 +1,72 @@
 import { useRouter } from 'expo-router';
-import { CheckCircle2, User } from 'lucide-react-native';
 import { useState } from 'react';
 import { FlatList, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
 import { useGameStore } from '../../store/gameStore';
+import { useSettingsStore } from '../../store/settingsStore';
 
 export default function VoteScreen() {
-    const { players, voteToEliminate } = useGameStore();
+    const { players, voteToEliminate: eliminatePlayer } = useGameStore();
+    const { appTheme } = useSettingsStore();
+    const isDark = appTheme === 'dark';
     const router = useRouter();
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
     const alivePlayers = players.filter(p => p.isAlive);
 
-    const handleConfirm = () => {
+    const handleEliminate = () => {
         if (selectedId) {
-            voteToEliminate(selectedId);
+            eliminatePlayer(selectedId);
             router.replace('/game/elimination');
         }
     };
 
     return (
         <ScreenWrapper>
-            <AppText variant="h1" className="text-center mb-2">Vote</AppText>
-            <AppText variant="sub" className="text-center mb-8">Discuss and select one player to eliminate.</AppText>
+            <View className="flex-1 px-4">
+                <View className="mt-8 mb-10">
+                    <AppText variant="h1" className={`text-4xl font-black mb-2 ${isDark ? 'text-white' : 'text-[#101828]'}`}>
+                        Who is the Impostor?
+                    </AppText>
+                    <AppText className="text-text-secondary text-lg">
+                        Discuss and select the player to eliminate
+                    </AppText>
+                </View>
 
-            <FlatList
-                data={alivePlayers}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => {
-                    const isSelected = selectedId === item.id;
-                    return (
-                        <TouchableOpacity
-                            onPress={() => setSelectedId(item.id)}
-                            className={`flex-row items-center p-4 mb-3 rounded-xl border ${isSelected ? 'bg-surface-soft border-primary' : 'bg-surface-card border-surface-soft'}`}
-                        >
-                            <View className="bg-surface-soft w-10 h-10 rounded-full items-center justify-center mr-4">
-                                <User size={20} color="#B6C2E2" />
-                            </View>
-                            <AppText className={`text-lg flex-1 ${isSelected ? 'font-bold text-white' : 'text-gray-300'}`}>{item.name}</AppText>
-                            {isSelected && <CheckCircle2 color="#E5533D" size={24} />}
-                        </TouchableOpacity>
-                    );
-                }}
-                contentContainerStyle={{ paddingBottom: 100 }}
-            />
+                <FlatList
+                    data={alivePlayers}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({ item }) => {
+                        const isSelected = selectedId === item.id;
+                        return (
+                            <TouchableOpacity
+                                onPress={() => setSelectedId(item.id)}
+                                activeOpacity={0.7}
+                                className={`p-6 mb-4 rounded-3xl border-2 ${isSelected
+                                    ? 'bg-primary-action/10 border-primary-action shadow-lg'
+                                    : (isDark ? 'bg-[#182235] border-transparent' : 'bg-white border-gray-100 shadow-sm')
+                                    }`}
+                            >
+                                <AppText className={`text-xl font-bold ${isSelected ? (isDark ? 'text-white' : 'text-[#101828]') : (isDark ? 'text-[#B6C2E2]' : 'text-gray-600')
+                                    }`}>
+                                    {item.name}
+                                </AppText>
+                            </TouchableOpacity>
+                        );
+                    }}
+                    ListFooterComponent={<View className="h-32" />}
+                />
+            </View>
 
-            <View className="absolute bottom-6 left-6 right-6">
+            <View className="absolute bottom-10 left-6 right-6">
                 <Button
-                    title="Eliminate"
-                    variant="danger"
+                    title="Eliminate Player"
                     disabled={!selectedId}
-                    onPress={handleConfirm}
+                    onPress={handleEliminate}
+                    className="w-full h-16"
                 />
             </View>
         </ScreenWrapper>
