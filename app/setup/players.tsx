@@ -6,6 +6,7 @@ import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatli
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
+import { useI18n } from '../../constants/i18n';
 import { useGameStore } from '../../store/gameStore';
 import { useSettingsStore } from '../../store/settingsStore';
 
@@ -15,6 +16,7 @@ export default function AddPlayers() {
     const { appTheme } = useSettingsStore();
     const isDark = appTheme === 'dark';
     const [name, setName] = useState('');
+    const t = useI18n();
 
     const handleAdd = () => {
         if (name.trim()) {
@@ -31,15 +33,15 @@ export default function AddPlayers() {
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
             >
                 <View className="mb-6">
-                    <AppText variant="h1">Players</AppText>
-                    <AppText variant="sub">Add players and arrange turn order</AppText>
+                    <AppText variant="h1">{t.playerSetup.title}</AppText>
+                    <AppText variant="sub">{t.playerSetup.addPlayer}</AppText>
                 </View>
 
                 {/* Input fixed at the top */}
                 <View className="flex-row mb-6 gap-2">
                     <TextInput
                         className={`flex-1 ${isDark ? 'bg-surface-card border-surface-soft text-white' : 'bg-white border-gray-200 text-[#101828]'} p-4 rounded-xl text-lg border font-sans`}
-                        placeholder="Player Name"
+                        placeholder={t.playerSetup.namePlaceholder}
                         placeholderTextColor={isDark ? "#7C8AA5" : "#98A2B3"}
                         value={name}
                         onChangeText={setName}
@@ -88,13 +90,13 @@ export default function AddPlayers() {
 
             <View className="absolute bottom-6 left-6 right-6">
                 <Button
-                    title={players.length < 3 ? `Next (${players.length}/3)` : `Next (${players.length})`}
+                    title={players.length < 3 ? `${t.common.next} (${players.length}/3)` : `${t.common.next} (${players.length})`}
                     disabled={players.length < 3}
                     onPress={() => router.push('/setup/config')}
                 />
                 {players.length < 3 && (
                     <AppText variant="sub" className="text-center mt-2 text-primary-action font-semibold italic">
-                        Minimum 3 players required
+                        {t.playerSetup.minPlayers}
                     </AppText>
                 )}
             </View>
