@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Home, RefreshCw, Trophy } from 'lucide-react-native';
-import { TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
+import appIcon from '../../assets/images/icon.png';
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
@@ -80,6 +81,12 @@ export default function VictoryScreen() {
                             {t.victory.backHome}
                         </AppText>
                     </TouchableOpacity>
+
+                    {/* Subtle app branding */}
+                    <Image
+                        source={appIcon}
+                        style={{ width: 28, height: 28, borderRadius: 6, opacity: 0.4, marginTop: 16 }}
+                    />
                 </View>
             </View>
         </ScreenWrapper>
