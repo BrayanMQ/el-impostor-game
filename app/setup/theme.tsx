@@ -7,7 +7,7 @@ import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
 import { useI18n } from '../../constants/i18n';
-import { THEME_WORDS_BY_LANG, ThemeKey } from '../../constants/Themes';
+import { PREDEFINED_THEMES, ThemeKey } from '../../constants/Themes';
 import { useGameStore } from '../../store/gameStore';
 import { useSettingsStore } from '../../store/settingsStore';
 
@@ -28,7 +28,8 @@ export default function ThemeSelection() {
     const [customInput, setCustomInput] = useState('');
     const t = useI18n();
 
-    const themes = [...Object.keys(THEME_WORDS_BY_LANG['en']), 'Custom'];
+    const predefinedThemes = PREDEFINED_THEMES ?? {};
+    const themes = [...Object.keys(predefinedThemes), 'Custom'];
 
     const handleAddWord = () => {
         if (customInput.trim()) {
