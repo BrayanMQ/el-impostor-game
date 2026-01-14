@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { MessageSquare } from 'lucide-react-native';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
+import appIcon from '../../assets/images/icon.png';
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
@@ -53,6 +54,12 @@ export default function PlayRound() {
                     textClassName="text-base"
                 />
             </View>
+
+            {/* Subtle app branding */}
+            <Image
+                source={appIcon}
+                style={{ position: 'absolute', bottom: 8, right: 8, width: 20, height: 20, borderRadius: 4, opacity: 0.2 }}
+            />
         </ScreenWrapper>
     );
 }
