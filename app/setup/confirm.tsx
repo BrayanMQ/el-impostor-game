@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
+import appIcon from '../../assets/images/icon.png';
 import { Button } from '../../components/Button';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { AppText } from '../../components/Typography';
@@ -51,6 +52,14 @@ export default function ConfirmGame() {
             </AppText>
 
             <Button title={t.playerSetup.startGame} onPress={handleStart} className="mt-auto mb-6" />
+            
+            {/* Subtle app branding */}
+            <View className="items-center pb-2">
+                <Image
+                    source={appIcon}
+                    style={{ width: 24, height: 24, borderRadius: 5, opacity: 0.35 }}
+                />
+            </View>
         </ScreenWrapper>
     );
 }
