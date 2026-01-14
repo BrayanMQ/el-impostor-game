@@ -8,6 +8,14 @@ export type ThemeKey =
     | 'Countries'
     | 'Custom';
 
+export const PREDEFINED_THEMES: Record<Exclude<ThemeKey, 'Custom'>, true> = {
+    Sports: true,
+    Animals: true,
+    Food: true,
+    Movies: true,
+    Countries: true,
+};
+
 export const THEME_WORDS_BY_LANG: Record<Language, Record<Exclude<ThemeKey, 'Custom'>, string[]>> = {
     es: {
         Sports: ['Fútbol', 'Baloncesto', 'Tenis', 'Natación', 'Béisbol', 'Voleibol', 'Golf', 'Boxeo', 'Esquí', 'Surf', 'Rugby', 'Ciclismo', 'Karate', 'Esgrima', 'Remo', 'Arquería', 'Hockey', 'Patinaje', 'Yoga', 'Judo'],

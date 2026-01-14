@@ -2,8 +2,8 @@ import { useRouter } from 'expo-router';
 import { GripVertical, Plus, Trash2 } from 'lucide-react-native';
 import { useState } from 'react';
 import { Image, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View } from 'react-native';
+import DraggableFlatList from 'react-native-draggable-flatlist';
 import appIcon from '../../assets/images/icon.png';
-import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatlist';
 import { Button } from '../../components/Button';
 import { CustomAlert } from '../../components/CustomAlert';
 import ScreenWrapper from '../../components/ScreenWrapper';
@@ -76,27 +76,28 @@ export default function AddPlayers() {
                     keyExtractor={item => item.id}
                     onDragEnd={({ data }) => reorderPlayers(data)}
                     renderItem={({ item, drag, isActive }) => (
-                        <ScaleDecorator>
+                        <TouchableOpacity
+                            onLongPress={drag}
+                            disabled={isActive}
+                            activeOpacity={1}
+                            className={`flex-row items-center p-4 mb-3 rounded-xl border ${isActive
+                                ? (isDark ? 'bg-surface-soft border-primary-action shadow-lg' : 'bg-gray-100 border-primary-action shadow-md')
+                                : (isDark ? 'bg-surface-card border-surface-soft' : 'bg-white border-gray-100')
+                                }`}
+                            style={isActive ? { transform: [{ scale: 1 }] } : undefined}
+                        >
+                            <View className="mr-3 opacity-50 p-1">
+                                <GripVertical color={isDark ? "#B6C2E2" : "#98A2B3"} size={20} />
+                            </View>
+                            <AppText className={`flex-1 font-semibold ${isDark ? 'text-white' : 'text-[#101828]'}`}>{item.name}</AppText>
                             <TouchableOpacity
-                                onLongPress={drag}
-                                disabled={isActive}
-                                activeOpacity={1}
-                                className={`flex-row items-center p-4 mb-3 rounded-xl border ${isActive ? (isDark ? 'bg-surface-soft border-primary-action' : 'bg-gray-100 border-primary-action') : (isDark ? 'bg-surface-card border-surface-soft' : 'bg-white border-gray-100')
-                                    }`}
+                                onPress={() => removePlayer(item.id)}
+                                className="p-2"
+                                activeOpacity={0.6}
                             >
-                                <View className="mr-3 opacity-50 p-1">
-                                    <GripVertical color={isDark ? "#B6C2E2" : "#98A2B3"} size={20} />
-                                </View>
-                                <AppText className={`flex-1 font-semibold ${isDark ? 'text-white' : 'text-[#101828]'}`}>{item.name}</AppText>
-                                <TouchableOpacity
-                                    onPress={() => removePlayer(item.id)}
-                                    className="p-2"
-                                    activeOpacity={0.6}
-                                >
-                                    <Trash2 color="#E5533D" size={20} />
-                                </TouchableOpacity>
+                                <Trash2 color="#E5533D" size={20} />
                             </TouchableOpacity>
-                        </ScaleDecorator>
+                        </TouchableOpacity>
                     )}
                     contentContainerStyle={{ paddingBottom: 150 }}
                     showsVerticalScrollIndicator={false}
