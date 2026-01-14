@@ -1,4 +1,5 @@
-import { useRouter } from 'expo-router';
+import { Image } from 'react-native';
+import appIcon from '../assets/images/icon.png';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { AppText } from '../components/Typography';
 
@@ -24,6 +25,11 @@ export default function HowToPlay() {
             <AppText className="mb-2 text-text-secondary">• Civilians win if they eliminate all Impostors.</AppText>
             <AppText className="mb-8 text-text-secondary">• Impostors win if they outnumber Civilians OR guess the word correctly upon elimination.</AppText>
 
+            {/* Subtle app branding */}
+            <Image
+                source={appIcon}
+                style={{ position: 'absolute', bottom: 8, right: 8, width: 20, height: 20, borderRadius: 4, opacity: 0.2 }}
+            />
         </ScreenWrapper>
     )
 }
