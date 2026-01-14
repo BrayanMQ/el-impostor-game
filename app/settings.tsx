@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Globe, Moon, Sun } from 'lucide-react-native';
-import { TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
+import appIcon from '../assets/images/icon.png';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { AppText } from '../components/Typography';
 import { FlagIcon } from '../components/icons/FlagIcon';
@@ -92,7 +93,11 @@ export default function SettingsScreen() {
                     </View>
                 </View>
 
-                <View className={`mt-8 border-t ${isDark ? 'border-surface-soft' : 'border-gray-200'} pt-8`}>
+                <View className={`mt-8 border-t ${isDark ? 'border-surface-soft' : 'border-gray-200'} pt-8 items-center`}>
+                    <Image
+                        source={appIcon}
+                        style={{ width: 48, height: 48, borderRadius: 10, marginBottom: 12, opacity: 0.8 }}
+                    />
                     <AppText className="text-muted text-center italic">
                         {t.settings.version} 1.0.0
                     </AppText>
