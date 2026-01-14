@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { PREDEFINED_THEMES, ThemeKey } from '../constants/Themes';
+import { THEME_WORDS_BY_LANG, ThemeKey } from '../constants/Themes';
+import { useSettingsStore } from './settingsStore';
 
 export type Role = 'civilian' | 'impostor';
 
@@ -27,6 +28,7 @@ interface GameState {
     roundNumber: number;
     gameStatus: 'setup' | 'playing' | 'discussion' | 'finished';
     winner: 'civilian' | 'impostor' | null;
+    winnerReason: 'majority' | 'guess' | 'eliminated' | null;
     eliminatedPlayerId: string | null;
 
     // Actions
@@ -63,6 +65,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     roundNumber: 0,
     gameStatus: 'setup',
     winner: null,
+    winnerReason: null,
     eliminatedPlayerId: null,
 
     addPlayer: (name) => set((state) => ({
@@ -118,8 +121,10 @@ export const useGameStore = create<GameState>((set, get) => ({
         if (settings.theme === 'Custom') {
             wordList = settings.customWords.length > 0 ? settings.customWords : ['Secret'];
         } else {
-            // @ts-ignore
-            wordList = PREDEFINED_THEMES[settings.theme] || ['Default'];
+            const { language } = useSettingsStore.getState();
+            // Get words for current language, fallback to English if not found
+            const wordsForLang = THEME_WORDS_BY_LANG[language] || THEME_WORDS_BY_LANG['en'];
+            wordList = wordsForLang[settings.theme] || ['Default'];
         }
         const secretWord = wordList[Math.floor(Math.random() * wordList.length)];
 
@@ -129,6 +134,7 @@ export const useGameStore = create<GameState>((set, get) => ({
             roundNumber: 0, // Will start naturally
             gameStatus: 'playing', // or 'reveal' logic handled in UI
             winner: null,
+            winnerReason: null,
             eliminatedPlayerId: null
         });
 
@@ -163,12 +169,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
         // 1) Civilians Win
         if (impostorsAlive === 0) {
-            set({ winner: 'civilian', gameStatus: 'finished' });
+            set({ winner: 'civilian', winnerReason: 'eliminated', gameStatus: 'finished' });
             return true;
         }
         // 2) Impostors Win by Majority
         else if (impostorsAlive >= civiliansAlive) {
-            set({ winner: 'impostor', gameStatus: 'finished' });
+            set({ winner: 'impostor', winnerReason: 'majority', gameStatus: 'finished' });
             return true;
         }
         return false;
@@ -176,7 +182,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     resolveImpostorGuess: (didGuess) => {
         if (didGuess) {
-            set({ winner: 'impostor', gameStatus: 'finished' });
+            set({ winner: 'impostor', winnerReason: 'guess', gameStatus: 'finished' });
         } else {
             // If they didn't guess, we just let the normal flow continue
             // The victory check will be called from the UI
@@ -186,7 +192,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     impostorGuess: (guess) => {
         const { secretWord } = get();
         if (guess.trim().toLowerCase() === secretWord.toLowerCase()) {
-            set({ winner: 'impostor', gameStatus: 'finished' });
+            set({ winner: 'impostor', winnerReason: 'guess', gameStatus: 'finished' });
             return true;
         } else {
             // If incorrect, impostor is eliminated (already done before guess usually, or we do it now?)
@@ -216,6 +222,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         set((state) => ({
             gameStatus: 'setup',
             winner: null,
+            winnerReason: null,
             roundNumber: 0,
             players: state.players.map(p => ({ ...p, role: 'civilian', isAlive: true })),
             eliminatedPlayerId: null,
