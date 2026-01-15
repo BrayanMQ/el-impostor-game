@@ -31,6 +31,7 @@ export default function RevealScreen() {
             ],
             opacity: interpolate(rotate.value, [85, 95], [1, 0]),
             backfaceVisibility: 'hidden',
+            zIndex: rotate.value < 90 ? 10 : 0,
         };
     });
 
@@ -42,15 +43,20 @@ export default function RevealScreen() {
             ],
             opacity: interpolate(rotate.value, [85, 95], [0, 1]),
             backfaceVisibility: 'hidden',
+            zIndex: rotate.value > 90 ? 10 : 0,
         };
     });
 
+    const [isPressed, setIsPressed] = useState(false);
+
     const handlePressIn = () => {
+        setIsPressed(true);
         rotate.value = withTiming(180, { duration: 500 });
         scale.value = withSpring(1.02); // Reduced scale to avoid collisions
     };
 
     const handlePressOut = () => {
+        setIsPressed(false);
         rotate.value = withTiming(0, { duration: 400 });
         scale.value = withSpring(1);
     };
@@ -102,45 +108,44 @@ export default function RevealScreen() {
                     {/* Front Face (Hidden/Confidential) */}
                     <Animated.View
                         style={[styles.cardFace, frontStyle]}
-                        className={`${isDark ? 'bg-surface-card border-surface-soft' : 'bg-white border-gray-100 shadow-2xl'} border-[3px] items-center py-10 px-6 rounded-[48px]`}
+                        className={`${isDark ? 'bg-surface-card border-surface-soft' : 'bg-white border-gray-100 shadow-2xl'} border-[3px] rounded-[48px] overflow-hidden`}
                     >
-                        {/* Top Section */}
-                        <View className="items-center w-full">
-                            <AppText className={`font-bold text-[10px] text-center opacity-50 uppercase tracking-[3px] ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                                {t.reveal.onlyLook}
-                            </AppText>
-                            <AppText
-                                adjustsFontSizeToFit
-                                numberOfLines={1}
-                                className={`font-black text-3xl text-center uppercase mt-1 ${isDark ? 'text-white' : 'text-[#101828]'}`}
-                            >
-                                {currentPlayer.name}
-                            </AppText>
-                        </View>
+                        <Pressable
+                            onPressIn={handlePressIn}
+                            onPressOut={handlePressOut}
+                            className="w-full h-full items-center justify-between py-10 px-6"
+                        >
+                            {/* Top Section */}
+                            <View className="items-center w-full">
+                                <AppText className={`font-bold text-[10px] text-center opacity-50 uppercase tracking-[3px] ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                                    {t.reveal.onlyLook}
+                                </AppText>
+                                <AppText
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
+                                    className={`font-black text-3xl text-center uppercase mt-1 ${isDark ? 'text-white' : 'text-[#101828]'}`}
+                                >
+                                    {currentPlayer.name}
+                                </AppText>
+                            </View>
 
-                        {/* Center Section - Text in the middle */}
-                        <View className="flex-1 w-full items-center justify-center">
-                            <AppText className={`font-black text-2xl uppercase tracking-widest text-center leading-8 ${isDark ? 'text-primary-action' : 'text-primary-action'}`}>
-                                {t.reveal.tapToReveal}
-                            </AppText>
-                        </View>
+                            {/* Center Section - Text in the middle */}
+                            <View className="flex-1 w-full items-center justify-center">
+                                <AppText className={`font-black text-2xl uppercase tracking-widest text-center leading-8 ${isDark ? 'text-primary-action' : 'text-primary-action'}`}>
+                                    {t.reveal.tapToReveal}
+                                </AppText>
+                            </View>
 
-                        {/* Bottom Section - Fingerprint */}
-                        <View className="items-center w-full pb-2">
-                            <Pressable
-                                onPressIn={handlePressIn}
-                                onPressOut={handlePressOut}
-                            >
-                                {({ pressed }) => (
-                                    <Fingerprint
-                                        size={90}
-                                        color={pressed ? "#C03520" : "#E5533D"}
-                                        strokeWidth={1.5}
-                                        style={{ opacity: pressed ? 0.8 : 1 }}
-                                    />
-                                )}
-                            </Pressable>
-                        </View>
+                            {/* Bottom Section - Fingerprint */}
+                            <View className="items-center w-full pb-2">
+                                <Fingerprint
+                                    size={90}
+                                    color={isPressed ? "#C03520" : "#E5533D"}
+                                    strokeWidth={1.5}
+                                    style={{ opacity: isPressed ? 0.8 : 1 }}
+                                />
+                            </View>
+                        </Pressable>
                     </Animated.View>
 
                     {/* Back Face (Revealed) */}
